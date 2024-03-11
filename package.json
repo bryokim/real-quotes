@@ -1,0 +1,23 @@
+{
+  "name": "real-quotes",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "nuxt build",
+    "dev": "nuxt dev",
+    "generate": "nuxt generate",
+    "preview": "nuxt preview",
+    "postinstall": "nuxt prepare"
+  },
+  "dependencies": {
+    "@iconify-json/fluent": "^1.1.50",
+    "@iconify-json/fluent-emoji": "^1.1.18",
+    "@nuxt/ui": "^2.14.2",
+    "nuxt": "^3.10.3",
+    "vue": "^3.4.21",
+    "vue-router": "^4.3.0"
+  },
+  "devDependencies": {
+    "@nuxtjs/google-fonts": "^3.1.3"
+  }
+}
