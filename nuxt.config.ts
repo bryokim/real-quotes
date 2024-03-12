@@ -6,6 +6,13 @@ export default defineNuxtConfig({
   $production: {
     // production configuration
   },
+
+  runtimeConfig: {
+    public: {
+      siteURL: "",
+    },
+  },
+
   modules: ["@nuxtjs/google-fonts", "@nuxt/ui", "@nuxtjs/supabase"],
 
   supabase: {

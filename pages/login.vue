@@ -2,6 +2,8 @@
 import type { FormSubmitEvent } from "#ui/types";
 import process from "process";
 
+const config = useRuntimeConfig();
+
 definePageMeta({
   middleware: "auth",
 });
@@ -16,7 +18,7 @@ const alertState = reactive({
 
 const getURL = () => {
   let url =
-    process.env?.NUXT_PUBLIC_SITE_URL ?? // Set this to site URL in production env.
+    config.public.siteURL ?? // Set to site URL in production env.
     process.env?.NUXT_ENV_VERCEL_URL ?? // Automatically set by Vercel.
     "http://localhost:3000/";
   // Make sure to include `https://` when not localhost.
@@ -47,7 +49,6 @@ const signInWithOtp = async (event: FormSubmitEvent) => {
   }
 };
 
-console.log(getURL());
 const signInWithOAuth = async () => {
   const { error } = await supabase.auth.signInWithOAuth({
     provider: "github",
