@@ -10,6 +10,7 @@
     "postinstall": "nuxt prepare"
   },
   "dependencies": {
+    "@iconify-json/bi": "^1.1.23",
     "@iconify-json/fluent": "^1.1.50",
     "@iconify-json/fluent-emoji": "^1.1.18",
     "@nuxt/ui": "^2.14.2",

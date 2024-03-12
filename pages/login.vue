@@ -47,6 +47,17 @@ const signInWithOtp = async (event: FormSubmitEvent) => {
   }
 };
 
+console.log(getURL());
+const signInWithOAuth = async () => {
+  const { error } = await supabase.auth.signInWithOAuth({
+    provider: "github",
+    options: {
+      redirectTo: getURL(),
+    },
+  });
+  if (error) console.log(error);
+};
+
 const state = reactive({
   email: undefined,
 });
@@ -91,5 +102,14 @@ const state = reactive({
       >
       </UButton>
     </UForm>
+
+    <UButton
+      class="mt-10"
+      label="sign in with github"
+      variant="outline"
+      icon="i-bi-github"
+      block
+      @click="signInWithOAuth"
+    />
   </div>
 </template>

@@ -29,7 +29,7 @@ export default defineNuxtConfig({
   },
 
   ui: {
-    icons: ["fluent", "fluent-emoji"],
+    icons: ["fluent", "fluent-emoji", "bi"],
   },
 
   app: {
