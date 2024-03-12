@@ -6,7 +6,16 @@ export default defineNuxtConfig({
   $production: {
     // production configuration
   },
-  modules: ["@nuxtjs/google-fonts", "@nuxt/ui"],
+  modules: ["@nuxtjs/google-fonts", "@nuxt/ui", "@nuxtjs/supabase"],
+
+  supabase: {
+    redirectOptions: {
+      login: "/login",
+      callback: "/confirm",
+      exclude: ["/"],
+      cookieRedirect: true,
+    },
+  },
 
   googleFonts: {
     families: {

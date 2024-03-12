@@ -1,11 +1,7 @@
 <script setup lang="ts">
-const quotes = [
-  {
-    text: "The early bird catches the worm",
-    author: "",
-  },
-  { text: "Money is the root of all evil", author: "Unknown" },
-];
+const supabase = useSupabaseClient();
+
+const { data: quotes } = await supabase.from("quotes").select();
 </script>
 
 <template>
@@ -15,7 +11,7 @@ const quotes = [
 
       <Quote
         v-for="quote in quotes"
-        :quote="quote.text"
+        :quote="quote.quote"
         :author="quote.author"
       />
     </div>
