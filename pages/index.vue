@@ -1,7 +1,11 @@
 <script setup lang="ts">
-const supabase = useSupabaseClient();
+const quotes = useQuotes();
 
-const { data: quotes } = await supabase.from("quotes").select('id, quote, author');
+const { getQuotes } = useQuotesClient();
+
+onBeforeMount(() => {
+  getQuotes();
+});
 </script>
 
 <template>
@@ -9,7 +13,10 @@ const { data: quotes } = await supabase.from("quotes").select('id, quote, author
     <div class="text-2xl flex flex-col items-center">
       <!-- <div>Welcome to <span class="text-sky-50 font-mono">QuoteSync</span></div> -->
 
+      <QuoteSkeleton v-if="!quotes" />
+
       <Quote
+        v-else
         v-for="quote in quotes"
         :quote="quote.quote"
         :author="quote.author"
