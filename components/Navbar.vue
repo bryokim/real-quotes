@@ -1,18 +1,18 @@
 <script setup lang="ts">
 const user = useSupabaseUser();
-const supabase = useSupabaseClient();
+const signedIn = ref(user.value ? true : false);
 
 const signOut = async () => {
-  const { error } = await supabase.auth.signOut();
+  try {
+    const { signOut } = useAuth();
 
-  if (error) console.log(error);
-  else {
+    signOut();
     signedIn.value = false;
     return navigateTo("/");
+  } catch (error: any) {
+    console.log(error);
   }
 };
-
-const signedIn = ref(user.value ? true : false);
 
 const colorMode = useColorMode();
 const isDark = computed({

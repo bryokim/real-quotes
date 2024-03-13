@@ -1,15 +1,13 @@
 <script setup lang="ts">
 import { z } from "zod";
 import type { FormSubmitEvent } from "#ui/types";
-import process from "process";
 
 definePageMeta({
   middleware: "auth",
 });
 
-const config = useRuntimeConfig();
-const supabase = useSupabaseClient();
-const loading = ref(false);
+const otpLoading = ref(false);
+const oauthLoading = ref(false);
 
 const alertState = reactive({
   show: false,
@@ -27,28 +25,12 @@ const schema = z.object({
 
 type Schema = z.output<typeof schema>;
 
-const getURL = () => {
-  let url =
-    config.public.siteURL ?? // Set to site URL in production env.
-    process.env?.NUXT_ENV_VERCEL_URL ?? // Automatically set by Vercel.
-    "http://localhost:3000/";
-  // Make sure to include `https://` when not localhost.
-  url = url.includes("http") ? url : `https://${url}`;
-  // Make sure to include a trailing `/`.
-  url = url.charAt(url.length - 1) === "/" ? url : `${url}/`;
-  return url;
-};
-
 const signInWithOtp = async (event: FormSubmitEvent<Schema>) => {
+  const { signInWithOtp } = useAuth();
   try {
-    loading.value = true;
-    const { error } = await supabase.auth.signInWithOtp({
-      email: event.data.email,
-      options: {
-        emailRedirectTo: getURL(),
-      },
-    });
-    if (error) throw error;
+    otpLoading.value = true;
+    await signInWithOtp(event);
+
     alertState.success = true;
     alertState.message = "Magic link was sent to your email";
   } catch (error: any) {
@@ -56,18 +38,20 @@ const signInWithOtp = async (event: FormSubmitEvent<Schema>) => {
     alertState.message = error.error_description || error.message;
   } finally {
     alertState.show = true;
-    loading.value = false;
+    otpLoading.value = false;
   }
 };
 
 const signInWithOAuth = async () => {
-  const { error } = await supabase.auth.signInWithOAuth({
-    provider: "github",
-    options: {
-      redirectTo: getURL(),
-    },
-  });
-  if (error) console.log(error);
+  const { signInWithOAuth } = useAuth();
+  try {
+    oauthLoading.value = true;
+    await signInWithOAuth();
+  } catch (error: any) {
+    console.log(error.message || error.error_description);
+  } finally {
+    oauthLoading.value = false;
+  }
 };
 </script>
 <template>
@@ -109,9 +93,9 @@ const signInWithOAuth = async () => {
 
       <UButton
         type="submit"
-        :loading="loading"
-        :label="loading ? 'loading...' : 'Send magic link'"
-        :disabled="loading"
+        :loading="otpLoading"
+        :label="otpLoading ? 'Sending link' : 'Send magic link'"
+        :disabled="otpLoading"
         block
       >
       </UButton>
@@ -121,9 +105,11 @@ const signInWithOAuth = async () => {
 
     <UButton
       class="mt-10"
-      label="sign in with github"
+      :label="oauthLoading ? 'Signing you in' : 'sign in with github'"
       variant="outline"
       icon="i-bi-github"
+      :disabled="oauthLoading"
+      :loading="oauthLoading"
       block
       @click="signInWithOAuth"
     />
