@@ -4,18 +4,25 @@
 
 export default defineNuxtRouteMiddleware(async (to, from) => {
   const user = useSupabaseUser();
+  const userInfo = useUserInfo();
+
   const client = useSupabaseClient();
 
   if (!user.value) {
     return navigateTo("/login");
   }
 
-  const { data: admin } = await useAsyncData("admin", async () => {
-    const { data } = await client.from("admins").select().single();
-    return data;
-  });
+  if (!userInfo.value) {
+    const { data: admin } = await useAsyncData("admin", async () => {
+      const { data } = await client.from("admins").select().single();
+      return data;
+    });
 
-  if (!admin.value) {
+    userInfo.value = { id: user.value.id, email: user.value.email };
+    userInfo.value.isAdmin = admin.value ? true : false;
+  }
+
+  if (!userInfo.value.isAdmin) {
     return navigateTo("/");
   }
 });
