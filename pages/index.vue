@@ -1,7 +1,7 @@
 <script setup lang="ts">
 const supabase = useSupabaseClient();
 
-const { data: quotes } = await supabase.from("quotes").select();
+const { data: quotes } = await supabase.from("quotes").select('id, quote, author');
 </script>
 
 <template>

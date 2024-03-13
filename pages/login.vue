@@ -1,20 +1,31 @@
 <script setup lang="ts">
+import { z } from "zod";
 import type { FormSubmitEvent } from "#ui/types";
 import process from "process";
-
-const config = useRuntimeConfig();
 
 definePageMeta({
   middleware: "auth",
 });
 
+const config = useRuntimeConfig();
 const supabase = useSupabaseClient();
 const loading = ref(false);
+
 const alertState = reactive({
   show: false,
   message: "",
   success: false,
 });
+
+const formState = reactive({
+  email: undefined,
+});
+
+const schema = z.object({
+  email: z.string().email(),
+});
+
+type Schema = z.output<typeof schema>;
 
 const getURL = () => {
   let url =
@@ -28,7 +39,7 @@ const getURL = () => {
   return url;
 };
 
-const signInWithOtp = async (event: FormSubmitEvent) => {
+const signInWithOtp = async (event: FormSubmitEvent<Schema>) => {
   try {
     loading.value = true;
     const { error } = await supabase.auth.signInWithOtp({
@@ -40,7 +51,7 @@ const signInWithOtp = async (event: FormSubmitEvent) => {
     if (error) throw error;
     alertState.success = true;
     alertState.message = "Magic link was sent to your email";
-  } catch (error) {
+  } catch (error: any) {
     alertState.success = false;
     alertState.message = error.error_description || error.message;
   } finally {
@@ -58,10 +69,6 @@ const signInWithOAuth = async () => {
   });
   if (error) console.log(error);
 };
-
-const state = reactive({
-  email: undefined,
-});
 </script>
 <template>
   <div
@@ -84,10 +91,15 @@ const state = reactive({
       />
     </div>
 
-    <UForm :state="state" @submit="signInWithOtp" class="w-full">
+    <UForm
+      :schema="schema"
+      :state="formState"
+      @submit="signInWithOtp"
+      class="w-full mb-10"
+    >
       <UFormGroup label="Email" name="email" class="mb-8" required>
         <UInput
-          v-model="state.email"
+          v-model="formState.email"
           type="email"
           placeholder="you@example.com"
           icon="i-heroicons-envelope"
@@ -99,10 +111,13 @@ const state = reactive({
         type="submit"
         :loading="loading"
         :label="loading ? 'loading...' : 'Send magic link'"
+        :disabled="loading"
         block
       >
       </UButton>
     </UForm>
+
+    <UDivider label="OR" />
 
     <UButton
       class="mt-10"
