@@ -33,5 +33,4 @@ import LinkWithIcon from "./LinkWithIcon.vue";
       </div>
     </div>
   </div>
-  >
 </template>
