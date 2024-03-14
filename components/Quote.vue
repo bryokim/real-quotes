@@ -1,8 +1,9 @@
 <script setup lang="ts">
-const props = defineProps({
-  quote: String,
-  author: String,
-});
+defineProps<{
+  id: string;
+  quote: string;
+  author?: string;
+}>();
 </script>
 
 <template>
@@ -26,23 +27,9 @@ const props = defineProps({
       <div
         class="group/actions invisible group-hover/quote:visible absolute -top-4 right-4 z-50 p-2 bg-white dark:bg-gray-900 rounded-lg flex flex-row"
       >
-        <UButton
-          class="me-3 hover:text-white hover:bg-gray-900 dark:hover:text-gray-900 dark:hover:bg-white"
-          :padded="false"
-          icon="i-heroicons-information-circle"
-          size="md"
-          color="primary"
-          variant="link"
-          :ui="{ rounded: 'rounded-full' }"
-        />
-        <UButton
-          class="me-1 hover:text-white hover:bg-gray-900 dark:hover:text-gray-900 dark:hover:bg-white"
-          :padded="false"
-          icon="i-heroicons-clipboard-document"
-          size="md"
-          color="primary"
-          variant="link"
-        />
+        <DetailsButton />
+
+        <CopyButton :quote="quote" />
       </div>
     </div>
   </div>

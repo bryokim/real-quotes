@@ -18,6 +18,8 @@ onBeforeMount(() => {
       <Quote
         v-else
         v-for="quote in quotes"
+        :key="quote.id"
+        :id="quote.id"
         :quote="quote.quote"
         :author="quote.author"
       />
@@ -26,7 +28,4 @@ onBeforeMount(() => {
 </template>
 
 <style>
-.font {
-  font-family: "Roboto", "Josefin Sans";
-}
 </style>
