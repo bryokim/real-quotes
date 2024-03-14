@@ -4,6 +4,8 @@ definePageMeta({
   layout: "no-footer",
 });
 
+const user = useUserInfo();
+
 const route = useRoute();
 const slug = ref(route.params.slug);
 </script>
@@ -19,6 +21,9 @@ const slug = ref(route.params.slug);
       />
       <UpdateQuote v-else-if="slug[0] == 'update'" />
       <DeleteQuote v-else-if="slug[0] == 'delete'" />
+      <AdminsView
+        v-else-if="slug[0] == 'admins' && user?.role == Roles['root']"
+      />
       <AdminHome v-else />
     </div>
   </div>
