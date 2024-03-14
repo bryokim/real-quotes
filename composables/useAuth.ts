@@ -1,5 +1,6 @@
 import type { FormSubmitEvent } from "#ui/types";
 import process from "process";
+import type { User } from "@supabase/supabase-js";
 
 interface Schema {
   email: string;
@@ -13,9 +14,30 @@ export const useAuth = () => {
   const config = useRuntimeConfig();
   const supabase = useSupabaseClient();
 
-  const setUserInfo = () => {
+  const setUserInfo = async () => {
     const user = useSupabaseUser();
-    userInfo.value = { id: user.value?.id, email: user.value?.email };
+    const admin = await getAdmin(user);
+
+    userInfo.value = {
+      id: user.value?.id,
+      email: user.value?.email,
+      role: Roles[admin.value?.role || "read"],
+      username: admin.value?.username,
+      isAdmin: admin.value ? true : false,
+    };
+  };
+
+  const getAdmin = async (user: Ref<User | null>) => {
+    const { data: admin } = await useAsyncData("admin", async () => {
+      const { data } = await supabase
+        .from("admins")
+        .select("username, role")
+        .eq("id", user.value?.id || "")
+        .single();
+      return data;
+    });
+
+    return admin;
   };
 
   const unsetUserInfo = () => {
@@ -45,7 +67,7 @@ export const useAuth = () => {
       },
     });
     if (error) throw error;
-    else setUserInfo();
+    else await setUserInfo();
   };
 
   const signInWithOAuth = async () => {
@@ -56,7 +78,7 @@ export const useAuth = () => {
       },
     });
     if (error) throw error;
-    else setUserInfo();
+    else await setUserInfo();
   };
 
   const signOut = async () => {
@@ -67,6 +89,7 @@ export const useAuth = () => {
   };
 
   return {
+    setUserInfo,
     signInWithOAuth,
     signInWithOtp,
     signOut,
