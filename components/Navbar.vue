@@ -6,7 +6,7 @@ const signOut = async () => {
   try {
     const { signOut } = useAuth();
 
-    signOut();
+    await signOut();
     signedIn.value = false;
     return navigateTo("/");
   } catch (error: any) {
