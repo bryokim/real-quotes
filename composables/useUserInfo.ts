@@ -1,7 +1,8 @@
 interface User {
-  id?: String;
-  email?: String;
+  id?: string;
+  email?: string;
   isAdmin?: Boolean;
+  username?: string
 }
 
 export const useUserInfo = () => {

@@ -14,11 +14,15 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
 
   if (!userInfo.value) {
     const { data: admin } = await useAsyncData("admin", async () => {
-      const { data } = await client.from("admins").select().single();
+      const { data } = await client.from("admins").select("username").single();
       return data;
     });
 
-    userInfo.value = { id: user.value.id, email: user.value.email };
+    userInfo.value = {
+      id: user.value.id,
+      email: user.value.email,
+      username: admin.value?.username,
+    };
     userInfo.value.isAdmin = admin.value ? true : false;
   }
 
