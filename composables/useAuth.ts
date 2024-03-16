@@ -93,5 +93,6 @@ export const useAuth = () => {
     signInWithOAuth,
     signInWithOtp,
     signOut,
+    getURL,
   };
 };
