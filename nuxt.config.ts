@@ -13,7 +13,12 @@ export default defineNuxtConfig({
     },
   },
 
-  modules: ["@nuxtjs/google-fonts", "@nuxt/ui", "@nuxtjs/supabase"],
+  modules: [
+    "@nuxtjs/google-fonts",
+    "@nuxt/ui",
+    "@nuxtjs/supabase",
+    "@nuxt/test-utils/module",
+  ],
 
   supabase: {
     redirectOptions: {
