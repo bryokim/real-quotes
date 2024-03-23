@@ -337,7 +337,7 @@ describe("useAuth Tests", () => {
     const { getURL } = useAuth();
     const config = useRuntimeConfig();
 
-    expect(config.public.siteURL).toBeUndefined;
+    expect(config.public.siteURL).toBeUndefined();
     expect(process.env.NUXT_ENV_VERCEL_URL).toBeDefined();
 
     const url = getURL();
